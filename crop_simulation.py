@@ -1,4 +1,4 @@
-#SWITCHING LAYOUTS
+
 
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
@@ -13,6 +13,15 @@ class CropWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Crop Simulator")
         self.create_select_crop_layout()
+        
+        self.stacked_layout = QStackedLayout() #this holds various layouts
+        self.stacked_layout.addWidget(self.select_crop_widget)
+
+        #set the central widget
+        self.central_widget=QWidget()
+        self.central_widget.setLayout(self.stacked_layout)
+        self.setCentralWidget(self.central_widget)
+        
     def create_select_crop_layout(self):
         #intitial layout of the window-to select crop type
 
@@ -31,6 +40,7 @@ class CropWindow(QMainWindow):
 
         #connections
         self.instantiate_button.clicked.connect(self.instantiate_crop)
+
     def create_view_crop_layout(self,crop_type):
         #this is the second layout window - view the crop growth
         self.growth_label = QLabel("Growth")
@@ -38,7 +48,7 @@ class CropWindow(QMainWindow):
         self.status_label = QLabel("Crop Status")
 
         self.growth_line_edit = QLineEdit()
-        self.days_line_edit = QlineEdit()
+        self.days_line_edit = QLineEdit()
         self.status_line_edit = QLineEdit()
 
         self.manual_grow_button = QPushButton("Manually Grow")
@@ -67,6 +77,9 @@ class CropWindow(QMainWindow):
         self.view_crop_widget.setLayout(self.grow_grid)
 
 
+        #connections
+        self.automatic_grow_button.clicked.coonect(self.automatically_grow_crop)
+        
     
         
         
@@ -80,7 +93,13 @@ class CropWindow(QMainWindow):
             
         elif crop_type == 2:
             self.simulated_crop = Potato()
-        print(self.simulated_crop)
+
+        self.create_view_crop_layout(crop_type)#create the view crop growth layout
+        self.stacked_layout.addWidget(self.view_crop_widget)#add to stack layout
+        self.stacked_layout.setCurrentIndex(1) #change the visible layout
+
+    def automatically_grow_crop(self):
+        
 
 def main():
     crop_simulation = QApplication(sys.argv)
